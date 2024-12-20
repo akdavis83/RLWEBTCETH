@@ -1,45 +1,59 @@
 RLWE Lattice-Based Post-Quantum BTC and ETH Key Pair Generation
+
 Overview
 This project implements a Ring Learning with Errors (RLWE) lattice-based quantum-resistant key exchange algorithm to generate post-quantum BTC and ETH key pairs. It ensures:
 
 Quantum Resistance: RLWE-based shared secrets are resistant to attacks from quantum computers.
+
 Compatibility: The shared secrets are used to derive private keys and public keys compatible with Bitcoin (secp256k1) and Ethereum standards.
+
 Features
+
 RLWE-Based Key Exchange:
 Quantum-resistant shared secret generation using RLWE.
+
 BTC Key Pair Generation:
 Generates Bitcoin private keys, public keys, and valid Bitcoin addresses in Base58Check format.
+
 ETH Key Pair Generation:
 Generates Ethereum private keys and addresses compatible with Ethereum wallets.
+
 Dependencies
 Ensure the following libraries are installed:
 
 bash
-Copy code
 npm install big-integer secp256k1 js-sha3 bitcoinjs-lib
+
 big-integer: For modular arithmetic with large numbers.
 secp256k1: For elliptic curve cryptography.
 js-sha3: For Keccak-256 hashing (used in Ethereum).
 bitcoinjs-lib: For Bitcoin address generation.
+
 Key Components
+
 1. RLWE Key Exchange
 RLWE is used to generate a quantum-resistant shared secret between two parties. The key exchange involves:
 
 Key Pair Generation: Generates a private key (random polynomial) and public key (FFT-transformed private key).
+
 Encapsulation: Uses the recipient's public key to generate a ciphertext and shared secret.
+
 Decapsulation: Uses the private key to recover the shared secret from the ciphertext.
+
 2. BTC Key Pair Generation
 The shared secret is converted into entropy, which is then used to:
 
 Generate a Bitcoin private key.
 Derive a compressed public key using the secp256k1 curve.
 Create a Bitcoin address in Base58Check format.
+
 3. ETH Key Pair Generation
 The shared secret is converted into entropy, which is then used to:
 
 Generate an Ethereum private key.
 Derive a public key using the secp256k1 curve.
 Hash the public key with Keccak-256 to generate the Ethereum address.
+
 Code Structure
 RLWE Key Exchange
 generateKeyPair():
@@ -48,18 +62,20 @@ encapsulate(publicKey):
 Encapsulates a shared secret using the recipient's public key.
 decapsulate(ciphertext, privateKey):
 Decapsulates a ciphertext to retrieve the shared secret using the private key.
+
 BTC Key Pair Generation
 sharedSecretToEntropy(sharedSecret):
 Converts the RLWE shared secret into 32 bytes of entropy using SHA-256.
 generateBTCKeyPair(sharedSecret):
 Generates a Bitcoin private key, public key, and address.
+
 ETH Key Pair Generation
 generateETHKeyPair(sharedSecret):
 Generates an Ethereum private key and address.
+
 Usage
 1. Main Execution
-javascript
-Copy code
+
 // RLWE Key Exchange
 const { privateKey, publicKey } = generateKeyPair();
 const { ciphertext, sharedSecret: senderSharedSecret } = encapsulate(publicKey);
@@ -74,10 +90,10 @@ console.log("BTC Address:", btcKeys.address);
 const ethKeys = generateETHKeyPair(receiverSharedSecret);
 console.log("ETH Private Key:", ethKeys.privateKey);
 console.log("ETH Address:", ethKeys.address);
+
 Examples
 1. RLWE Key Exchange
-javascript
-Copy code
+
 const { privateKey, publicKey } = generateKeyPair();
 console.log("RLWE Private Key:", privateKey);
 console.log("RLWE Public Key:", publicKey);
@@ -88,33 +104,36 @@ console.log("Shared Secret:", sharedSecret);
 
 const recoveredSecret = decapsulate(ciphertext, privateKey);
 console.log("Recovered Shared Secret:", recoveredSecret);
+
 2. BTC Key Pair
-javascript
-Copy code
+
 const btcKeys = generateBTCKeyPair(receiverSharedSecret);
 console.log("BTC Private Key:", btcKeys.privateKey);
 console.log("BTC Public Key:", btcKeys.publicKey);
 console.log("BTC Address:", btcKeys.address);
+
 3. ETH Key Pair
-javascript
-Copy code
+
 const ethKeys = generateETHKeyPair(receiverSharedSecret);
 console.log("ETH Private Key:", ethKeys.privateKey);
 console.log("ETH Address:", ethKeys.address);
+
 Output Example
 vbnet
-Copy code
 BTC Private Key: 6bf76d34c54aa1aa4cc732fad790168623ae3a9609a8539a0a4daff732bee7fd
 BTC Public Key: 02c9e0b7c4a7d3e4f8a6b5c2d1f4e3a8b9c7d6e5f4a2b1c3d7e8f9b2c1d4a5e6
 BTC Address: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa
 ETH Private Key: 6bf76d34c54aa1aa4cc732fad790168623ae3a9609a8539a0a4daff732bee7fd
 ETH Address: 0xd068fc317dfbfcc7602bfc23ba29746d8818652e
+
 Limitations
 Quantum Resistance:
 BTC and ETH keys are quantum-resistant only until they are converted into ECC-based formats (secp256k1).
 Full quantum resistance requires a blockchain supporting post-quantum cryptography.
+
 Performance:
 FFT-based RLWE computations may require optimization for large-scale use.
+
 Future Improvements
 Quantum-Resistant Wallets:
 Integrate with a wallet supporting quantum-safe cryptography.
@@ -122,6 +141,7 @@ Blockchain Support:
 Adapt for blockchains implementing post-quantum algorithms.
 Performance Optimization:
 Optimize FFT and modular arithmetic for better performance.
+
 Conclusion
 This implementation demonstrates how RLWE lattice-based cryptography can be used to generate quantum-resistant BTC and ETH keys. While the keys are compatible with current blockchain standards, future advancements in post-quantum cryptography will be required for end-to-end quantum resistance.
 
